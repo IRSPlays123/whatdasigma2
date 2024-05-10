@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>untitled</title>
+    <style>
+        /* No changes in CSS */
+        #openBtn {
+            background-color: white; /* Button is fully white */
+            color: white; /* Text color is white to make it invisible */
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            border: none;
+            cursor: pointer; /* Changes the cursor to a pointer to indicate it's clickable */
+        }
+    </style>
+</head>
+<body>
+    <button id="openBtn"></button> <!-- Removed text for a fully white button -->
+    <script>
+        // JavaScript code remains the same
+        document.getElementById('openBtn').addEventListener('click', function() {
+            var newWindow = window.open('about:blank', '_blank');
+            var iframe = newWindow.document.createElement('iframe');
+            iframe.src = "https://bloxd.io";
+            iframe.style.border = "none";
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.margin = "0px";
+            newWindow.document.body.style.margin = "0";
+            newWindow.document.body.appendChild(iframe);
+
+            iframe.addEventListener('load', function() {
+                iframe.contentWindow.focus();
+            });
+
+            let lastEventTime = 0;
+            newWindow.addEventListener('keydown', function(event) {
+                const now = Date.now();
+                if (now - lastEventTime > 100) {
+                    iframe.contentWindow.postMessage({
+                        type: 'keydown',
+                        key: event.key,
+                        keyCode: event.keyCode,
+                        code: event.code
+                    }, '*');
+                    lastEventTime = now;
+                }
+            }, true);
+
+            var interval = setInterval(function() {
+                if (newWindow.closed) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
